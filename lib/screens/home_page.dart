@@ -17,6 +17,7 @@ class _HomePageState extends State<HomePage> {
 
   void _addExpense() async {
     var newExpense = await showModalBottomSheet(
+        useSafeArea: true,
         isScrollControlled: true,
         context: context,
         builder: (ctx) => const NewExpense());
@@ -52,6 +53,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Expense Tracker"),
@@ -62,18 +65,31 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Chart(expenses: _expenseList),
-          Expanded(
-              child: _expenseList.isEmpty
-                  ? mainContent
-                  : ExpenseList(
-                      expenseList: _expenseList,
-                      onRemoveExpense: _onRemoveExpense,
-                    ))
-        ],
-      ),
+      body: width < height
+          ? Column(
+              children: [
+                Chart(expenses: _expenseList),
+                Expanded(
+                    child: _expenseList.isEmpty
+                        ? mainContent
+                        : ExpenseList(
+                            expenseList: _expenseList,
+                            onRemoveExpense: _onRemoveExpense,
+                          ))
+              ],
+            )
+          : Row(
+              children: [
+                Expanded(child: Chart(expenses: _expenseList)),
+                Expanded(
+                    child: _expenseList.isEmpty
+                        ? mainContent
+                        : ExpenseList(
+                            expenseList: _expenseList,
+                            onRemoveExpense: _onRemoveExpense,
+                          ))
+              ],
+            ),
     );
   }
 }
